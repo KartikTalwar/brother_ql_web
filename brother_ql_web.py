@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
 """
@@ -8,13 +8,14 @@ This is a web service to print labels on Brother QL label printers.
 import sys, logging, random, json, argparse
 from io import BytesIO
 
-from bottle import run, route, get, post, response, request, jinja2_view as view, static_file, redirect
+from bottle import app, run, route, get, post, response, request, jinja2_view as view, static_file, redirect
 from PIL import Image, ImageDraw, ImageFont
 
 from brother_ql.devicedependent import models, label_type_specs, label_sizes
 from brother_ql.devicedependent import ENDLESS_LABEL, DIE_CUT_LABEL, ROUND_DIE_CUT_LABEL
 from brother_ql import BrotherQLRaster, create_label
 from brother_ql.backends import backend_factory, guess_backend
+from bottle_cors_plugin import cors_plugin
 
 from font_helpers import get_fonts
 
@@ -299,4 +300,6 @@ def main():
     run(host=CONFIG['SERVER']['HOST'], port=PORT, debug=DEBUG)
 
 if __name__ == "__main__":
+    app = app()
+    app.install(cors_plugin('*'))
     main()
